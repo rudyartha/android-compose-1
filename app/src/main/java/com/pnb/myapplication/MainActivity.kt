@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun GreetingView(greeting: Greeting, modifier: Modifier = Modifier) {
+fun GreetingView(greeting: Greeting) {
     Surface(
         shadowElevation = 4.dp,
         shape = MaterialTheme.shapes.large,
