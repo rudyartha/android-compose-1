@@ -22,6 +22,7 @@ import com.pnb.myapplication.R
 
 @Composable
 fun SearchBar(
+    viewModel: HomeViewModel,
     modifier: Modifier = Modifier
 ) {
     var text by remember { mutableStateOf("") }
@@ -30,6 +31,7 @@ fun SearchBar(
         value = text,
         onValueChange = {
             text = it
+            viewModel.searchWords(text)
         },
         leadingIcon = {
             Icon(

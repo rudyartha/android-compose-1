@@ -1,9 +1,9 @@
 package com.pnb.myapplication
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,18 +32,21 @@ import com.pnb.myapplication.ui.home.AlignYourBodyRow
 import com.pnb.myapplication.ui.home.BottomNavigation
 import com.pnb.myapplication.ui.home.FavoriteCollectionCard
 import com.pnb.myapplication.ui.home.FavoriteCollectionsGrid
+import com.pnb.myapplication.ui.home.HomeViewModel
 import com.pnb.myapplication.ui.home.NavigationRail
+import com.pnb.myapplication.ui.home.ProductList
 import com.pnb.myapplication.ui.home.SearchBar
 import com.pnb.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+    private val viewModel: HomeViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
-            MyApp(windowSizeClass)
+            MyApp(windowSizeClass, viewModel)
         }
     }
 }
@@ -67,36 +70,62 @@ fun HomeSection(
 }
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun ProductsSection(
+    @StringRes title: Int,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
     Column(
-        modifier.verticalScroll(rememberScrollState())
+        modifier
+    // modifier.verticalScroll(rememberScrollState())
+    ) {
+        Text(
+            text = stringResource(title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .paddingFromBaseline(top = 40.dp, bottom = 16.dp)
+                .padding(horizontal = 16.dp)
+        )
+        content()
+    }
+}
+
+@Composable
+fun HomeScreen(viewModel: HomeViewModel, modifier: Modifier = Modifier) {
+    Column(
+        modifier
+        // modifier.verticalScroll(rememberScrollState())
     ) {
         Spacer(Modifier.height(16.dp))
-        SearchBar(Modifier.padding(horizontal = 16.dp))
-        HomeSection(R.string.align_your_body) {
+        SearchBar(viewModel, Modifier.padding(horizontal = 16.dp))
+        HomeSection(title = R.string.align_your_body) {
             AlignYourBodyRow()
         }
         HomeSection(title = R.string.favorite_collections) {
             FavoriteCollectionsGrid()
         }
 
+        ProductsSection(title = R.string.related_products) {
+            ProductList(viewModel)
+        }
+
         Spacer(Modifier.height(16.dp))
     }
 }
 
 @Composable
-fun MyAppPortrait() {
+fun MyAppPortrait(viewModel: HomeViewModel) {
     MyApplicationTheme {
         Scaffold(
             bottomBar = { BottomNavigation() }
-        ) { padding ->
-            HomeScreen(Modifier.padding(padding))
+        ) {
+            paddingValues ->  HomeScreen(viewModel, Modifier.padding(paddingValues))
         }
     }
 }
 
 @Composable
-fun MyAppLandscape() {
+fun MyAppLandscape(viewModel: HomeViewModel) {
     MyApplicationTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -104,21 +133,21 @@ fun MyAppLandscape() {
         ) {
             Row {
                 NavigationRail()
-                HomeScreen()
+                HomeScreen(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun MyApp(windowSize: WindowSizeClass) {
+fun MyApp(windowSize: WindowSizeClass, viewModel: HomeViewModel) {
     when (windowSize.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
-            MyAppPortrait()
+            MyAppPortrait(viewModel)
         }
 
         WindowWidthSizeClass.Expanded -> {
-            MyAppLandscape()
+            MyAppLandscape(viewModel)
         }
     }
 }
@@ -127,7 +156,7 @@ fun MyApp(windowSize: WindowSizeClass) {
 @Composable
 fun SearchBarPreview() {
     MyApplicationTheme {
-        SearchBar()
+        // SearchBar()
     }
 }
 
@@ -164,7 +193,7 @@ fun ScreenContentPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            HomeScreen()
+            // HomeScreen()
         }
     }
 }
