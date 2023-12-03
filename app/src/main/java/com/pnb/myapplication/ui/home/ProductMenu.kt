@@ -34,12 +34,12 @@ fun ProductList(viewModel: HomeViewModel) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(productList) { product: Product -> ProductView(product) }
+        items(productList) { product: Product -> ProductView(product, viewModel) }
     }
 }
 
 @Composable
-fun ProductView(product: Product) {
+fun ProductView(product: Product, viewModel: HomeViewModel) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = MaterialTheme.shapes.medium,
@@ -65,7 +65,7 @@ fun ProductView(product: Product) {
 
             Column {
                 Text(text = product.name, style = MaterialTheme.typography.titleMedium)
-                Text(text = product.price.toString())
+                Text(text = viewModel.formatAmount(product.price))
             }
 
         }

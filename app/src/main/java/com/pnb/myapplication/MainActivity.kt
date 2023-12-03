@@ -1,6 +1,7 @@
 package com.pnb.myapplication
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -37,13 +38,21 @@ import com.pnb.myapplication.ui.home.NavigationRail
 import com.pnb.myapplication.ui.home.ProductList
 import com.pnb.myapplication.ui.home.SearchBar
 import com.pnb.myapplication.ui.theme.MyApplicationTheme
+import com.pnb.myapplication.util.NumberFormatter
+import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject lateinit var numberFormatter: NumberFormatter
+
     private val viewModel: HomeViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("MainActivity", numberFormatter.formatNumber(BigDecimal(125000.95)))
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             MyApp(windowSizeClass, viewModel)
