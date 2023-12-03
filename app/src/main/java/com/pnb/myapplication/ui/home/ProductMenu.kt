@@ -18,19 +18,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.pnb.myapplication.R
-import com.pnb.myapplication.data.Product
+import com.pnb.myapplication.data.product.Product
 
 @Composable
 fun ProductList(viewModel: HomeViewModel) {
-    val productList by viewModel.productList.collectAsState()
+    val productList by viewModel.productList.observeAsState(emptyList())
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

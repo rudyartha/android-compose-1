@@ -3,6 +3,7 @@ package com.pnb.myapplication.data
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.pnb.myapplication.R
+import com.pnb.myapplication.data.product.Product
 import java.math.BigDecimal
 
 data class DrawableStringPair(
@@ -10,8 +11,6 @@ data class DrawableStringPair(
     @StringRes val text: Int,
     val index: Int
 )
-
-data class Product(val id: Int, val name: String, val price: BigDecimal)
 
 val alignYourBodyData = listOf(
     DrawableStringPair(R.drawable.ab1_inversions, R.string.ab1_inversions, 0),
@@ -33,9 +32,9 @@ val favoriteCollectionsData = listOf(
 
 val products = listOf(
     Product(1, "Yoga Mat", BigDecimal(10000)),
-    Product(1, "Yoga Mat bag", BigDecimal(5000)),
-    Product(1, "Comfortable Exercise Clothes", BigDecimal(50000)),
-    Product(1, "Water Bottle", BigDecimal(25000)),
-    Product(1, "Yoga Block", BigDecimal(35000)),
-    Product(1, "Yoga Strap", BigDecimal(15000))
+    Product(2, "Yoga Mat bag", BigDecimal(5000)),
+    Product(3, "Comfortable Exercise Clothes", BigDecimal(50000)),
+    Product(4, "Water Bottle", BigDecimal(25000)),
+    Product(5, "Yoga Block", BigDecimal(35000)),
+    Product(6, "Yoga Strap", BigDecimal(15000))
 )
