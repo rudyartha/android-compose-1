@@ -26,7 +26,7 @@ class HomeViewModel @Inject constructor(
         get() = _productList
 
     init {
-        setProducts()
+        getProducts()
     }
 
     fun searchWords(word: String) {
@@ -50,6 +50,13 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             productRepository.saveAllProducts(products)
             val newProducts = productRepository.findAllProducts()
+            _productList.postValue(newProducts)
+        }
+    }
+
+    private fun getProducts() {
+        viewModelScope.launch {
+            val newProducts = productRepository.getProducts()
             _productList.postValue(newProducts)
         }
     }
