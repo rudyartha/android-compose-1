@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pnb.myapplication.data.product.Product
 import com.pnb.myapplication.data.product.ProductRepository
-import com.pnb.myapplication.data.products
 import com.pnb.myapplication.util.NumberFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import javax.inject.Inject
 
@@ -31,13 +31,19 @@ class HomeViewModel @Inject constructor(
 
     fun searchWords(word: String) {
         if (word.isEmpty()) {
-            updateProductList(products)
+            viewModelScope.launch(Dispatchers.IO) {
+                val products = productRepository.findAllProducts()
+                withContext(Dispatchers.Main) {
+                    _productList.value = products
+                }
+            }
         }
         if (word.length >= 3) {
-            val filteredList =
-                _productList.value?.filter { it.name.contains(word, ignoreCase = true) }
-            if (filteredList != null) {
-                updateProductList(filteredList)
+            viewModelScope.launch(Dispatchers.IO) {
+                val filteredList = productRepository.findProductByName(word)
+                withContext(Dispatchers.Main) {
+                    updateProductList(filteredList)
+                }
             }
         }
     }
@@ -46,18 +52,13 @@ class HomeViewModel @Inject constructor(
         return numberFormatter.formatNumber(amount)
     }
 
-    private fun setProducts() {
-        viewModelScope.launch(Dispatchers.IO) {
-            productRepository.saveAllProducts(products)
-            val newProducts = productRepository.findAllProducts()
-            _productList.postValue(newProducts)
-        }
-    }
-
     private fun getProducts() {
-        viewModelScope.launch {
-            val newProducts = productRepository.getProducts()
-            _productList.postValue(newProducts)
+        viewModelScope.launch(Dispatchers.IO) {
+            val products = productRepository.getProducts()
+            productRepository.saveAllProducts(products)
+            withContext(Dispatchers.Main) {
+                _productList.value = products
+            }
         }
     }
 

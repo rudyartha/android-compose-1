@@ -12,4 +12,7 @@ interface ProductDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertProducts(products: List<Product>)
+
+    @Query("SELECT * FROM products WHERE name LIKE '%' || :name || '%'")
+    suspend fun findByName(name: String): List<Product>
 }

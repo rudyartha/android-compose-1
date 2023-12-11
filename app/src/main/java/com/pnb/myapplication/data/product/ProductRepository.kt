@@ -13,5 +13,7 @@ class ProductRepository @Inject constructor(private val productDao: ProductDao, 
         productDao.insertProducts(products)
     }
 
+    suspend fun findProductByName(name: String): List<Product> = productDao.findByName(name)
+
     suspend fun getProducts(): List<Product> = apiHelper.getProducts()
 }
